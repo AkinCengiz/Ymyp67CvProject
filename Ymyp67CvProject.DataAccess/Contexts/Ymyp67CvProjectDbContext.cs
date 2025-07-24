@@ -1,14 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Ymyp67CvProject.Entity.Concrete;
 
 namespace Ymyp67CvProject.DataAccess.Contexts;
-public sealed class Ymyp67CvProjectDbContext : DbContext
+public sealed class Ymyp67CvProjectDbContext(DbContextOptions<Ymyp67CvProjectDbContext> options) : DbContext(options)
 {
+    //public Ymyp67CvProjectDbContext(DbContextOptions<Ymyp67CvProjectDbContext> options) : base(options)
+    //{
+
+    //}
+
+
+    //Burada modelBuilder ile yaptığımız konfigürasyonları Configuration klasöründeki ilgili classlar yardımıyla yaptık.
+    //protected override void OnModelCreating(ModelBuilder modelBuilder)
+    //{
+    //    modelBuilder.Entity<Education>().Property(e => e.School).HasMaxLength(100);
+    //    base.OnModelCreating(modelBuilder);
+    //}
+
+    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //IEntityTypeConfiguration<T> interface ini implement eden classları çağıyoruz.
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(modelBuilder);
+    }
 
 
     public DbSet<About> Abouts { get; set; }
