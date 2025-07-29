@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Core.Business;
 using Core.Utilities.Results;
 using Ymyp67CvProject.Entity.Concrete;
+using Ymyp67CvProject.Entity.Dtos.Experience;
 
 namespace Ymyp67CvProject.Business.Abstract;
-public interface IExperienceService : IGenericService<Experience>
+public interface IExperienceService : IGenericService<Experience,ExperienceResponseDto,ExperienceCreateRequestDto,ExperienceUpdateRequestDto,ExperienceDetailResponseDto>
 {
-    Task<IDataResult<IEnumerable<Experience>>> GetExperiencesByCompanyAsync(string company);
+    Task<IDataResult<IEnumerable<ExperienceResponseDto>>> GetExperiencesByCompanyAsync(string company);
 }

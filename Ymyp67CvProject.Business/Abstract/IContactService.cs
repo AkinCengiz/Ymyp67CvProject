@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Core.Business;
 using Core.Utilities.Results;
 using Ymyp67CvProject.Entity.Concrete;
+using Ymyp67CvProject.Entity.Dtos.Contact;
 
 namespace Ymyp67CvProject.Business.Abstract;
-public interface IContactService : IGenericService<Contact>
+public interface IContactService : IGenericService<Contact,ContactResponseDto,ContactCreateRequestDto,ContactUpdateRequestDto,ContactDetailResponseDto>
 {
-    Task<IDataResult<IEnumerable<Contact>>> GetContactListByCityAsync();
+    Task<IDataResult<IEnumerable<ContactResponseDto>>> GetContactListByCityAsync();
 }

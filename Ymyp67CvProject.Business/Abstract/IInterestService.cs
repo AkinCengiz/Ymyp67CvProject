@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Business;
 using Ymyp67CvProject.Entity.Concrete;
+using Ymyp67CvProject.Entity.Dtos.Interest;
 
 namespace Ymyp67CvProject.Business.Abstract;
-public interface IInterestService : IGenericService<Interest>
+public interface IInterestService : IGenericService<Interest, InterestResponseDto,InterestCreateRequestDto,InterestUpdateRequestDto,InterestDetailResponseDto>
 {
 }
