@@ -11,5 +11,5 @@ using Ymyp67CvProject.Entity.Dtos.Certificate;
 namespace Ymyp67CvProject.Business.Abstract;
 public interface ICertificateService : IGenericService<Certificate,CertificateResponseDto,CertificateCreateRequestDto,CertificateUpdateRequestDto,CertificateDetailResponseDto>
 {
-    Task<IDataResult<IEnumerable<CertificateResponseDto>>> GetCertificatesByOrganisationAsync();
+    Task<IDataResult<IEnumerable<CertificateResponseDto>>> GetCertificatesByOrganisationAsync(string organisation);
 }
