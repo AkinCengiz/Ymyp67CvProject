@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.UnitOfWorks;
 using Core.Utilities.Results;
+using Microsoft.EntityFrameworkCore;
 using Ymyp67CvProject.Business.Abstract;
 using Ymyp67CvProject.DataAccess.Abstract;
 using Ymyp67CvProject.Entity.Concrete;
@@ -31,35 +32,94 @@ public class AboutManager : IAboutService
         {
             var about = _mapper.Map<About>(dto);
             await _aboutRepository.AddAsync(about);
-
+            
             await _unitOfWork.CommitAsync();
-            throw new NotImplementedException();//UnitOfWork anlatılacak.
+
+            var response = _mapper.Map<AboutResponseDto>(about);
+            return new SuccessDataResult<AboutResponseDto>(response, "About added successfully");
 
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            return new ErrorDataResult<AboutResponseDto>(e.Message);
         }
     }
 
-    public Task<IResult> UpdateAsync(AboutUpdateRequestDto dto)
+    public async Task<IResult> UpdateAsync(AboutUpdateRequestDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var about = _mapper.Map<About>(dto);
+            about.UpdateAt = DateTime.Now;
+            _aboutRepository.Update(about);
+            await _unitOfWork.CommitAsync();
+            return new SuccessResult("About updated successfully");
+        }
+        catch (Exception e)
+        {
+            return new ErrorResult(e.Message);
+        }
     }
 
-    public Task<IResult> RemoveAsync(Guid id)
+    public async Task<IResult> RemoveAsync(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var about = await _aboutRepository.GetAsync(a => a.Id == id);
+            if (about is null)
+            {
+                return new ErrorResult("About not found");
+            }
+            about.UpdateAt = DateTime.Now;
+            about.IsDeleted = true;
+            about.IsActive = false;
+            _aboutRepository.Update(about);
+            await _unitOfWork.CommitAsync();
+            return new SuccessResult("About removed successfully");
+
+
+        }
+        catch (Exception e)
+        {
+            return new ErrorResult(e.Message);
+        }
     }
 
-    public Task<IDataResult<AboutResponseDto>> GetByIdAsync(Guid id)
+    public async Task<IDataResult<AboutResponseDto>> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var about = await _aboutRepository.GetAsync(a => a.Id == id);
+            if (about == null)
+            {
+                return new ErrorDataResult<AboutResponseDto>("About not found");
+            }
+
+            var response = _mapper.Map<AboutResponseDto>(about);
+            return new SuccessDataResult<AboutResponseDto>(response, "About get successfully");
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<AboutResponseDto>(e.Message);
+        }
     }
 
-    public Task<IDataResult<IEnumerable<AboutResponseDto>>> GetAllAsync()
+    public async Task<IDataResult<IEnumerable<AboutResponseDto>>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var abouts = await _aboutRepository.GetAll(a => !a.IsDeleted).ToListAsync();
+            if (abouts is null)
+            {
+                return new ErrorDataResult<IEnumerable<AboutResponseDto>>("About list not found");
+            }
+
+            var dtos = _mapper.Map<IEnumerable<AboutResponseDto>>(abouts);
+            return new SuccessDataResult<IEnumerable<AboutResponseDto>>(dtos, "About get list successfully");
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<IEnumerable<AboutResponseDto>>(e.Message);
+        }
     }
 }
