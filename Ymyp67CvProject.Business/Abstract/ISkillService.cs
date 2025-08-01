@@ -11,6 +11,6 @@ using Ymyp67CvProject.Entity.Dtos.Skill;
 namespace Ymyp67CvProject.Business.Abstract;
 public interface ISkillService : IGenericService<Skill,SkillResponseDto,SkillCreateRequestDto,SkillUpdateRequestDto,SkillDetailResponseDto>
 {
-    Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsProgramLanguagesAsync(bool program);
-    Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsToolsAsync(bool tools);
+    Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsProgramLanguagesAsync();
+    Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsToolsAsync();
 }

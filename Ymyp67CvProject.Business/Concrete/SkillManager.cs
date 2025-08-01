@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.UnitOfWorks;
 using Core.Utilities.Results;
+using Microsoft.EntityFrameworkCore;
 using Ymyp67CvProject.Business.Abstract;
+using Ymyp67CvProject.Business.Constants;
 using Ymyp67CvProject.DataAccess.Abstract;
+using Ymyp67CvProject.Entity.Concrete;
 using Ymyp67CvProject.Entity.Dtos.Skill;
 
 namespace Ymyp67CvProject.Business.Concrete;
@@ -24,38 +27,133 @@ public class SkillManager : ISkillService
         _unitOfWork = unitOfWork;
     }
 
-    public Task<IDataResult<SkillResponseDto>> AddAsync(SkillCreateRequestDto dto)
+    public async Task<IDataResult<SkillResponseDto>> AddAsync(SkillCreateRequestDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var skill = _mapper.Map<Skill>(dto);
+            await _skillRepository.AddAsync(skill);
+            await _unitOfWork.CommitAsync();
+            var response = _mapper.Map<SkillResponseDto>(skill);
+            return new SuccessDataResult<SkillResponseDto>(response, ResultMessages.SuccessCreated);
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<SkillResponseDto>(e.Message);
+        }
     }
 
-    public Task<IResult> UpdateAsync(SkillUpdateRequestDto dto)
+    public async Task<IResult> UpdateAsync(SkillUpdateRequestDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var skill = _mapper.Map<Skill>(dto);
+            skill.UpdateAt = DateTime.Now;
+            _skillRepository.Update(skill);
+            await _unitOfWork.CommitAsync();
+            return new SuccessResult(ResultMessages.SuccessUpdated);
+        }
+        catch (Exception e)
+        {
+            return new ErrorResult(e.Message);
+        }
     }
 
-    public Task<IResult> RemoveAsync(Guid id)
+    public async Task<IResult> RemoveAsync(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var skill = await _skillRepository.GetAsync(s => s.Id == id);
+            if (skill == null)
+            {
+                return new ErrorResult(ResultMessages.ErrorGet);
+            }
+            skill.UpdateAt = DateTime.Now;
+            skill.IsDeleted = true;
+            skill.IsActive = false;
+            _skillRepository.Update(skill);
+            await _unitOfWork.CommitAsync();
+            return new SuccessResult(ResultMessages.SuccessDeleted);
+        }
+        catch (Exception e)
+        {
+            return new ErrorResult(e.Message);
+        }
     }
 
-    public Task<IDataResult<SkillResponseDto>> GetByIdAsync(Guid id)
+    public async Task<IDataResult<SkillResponseDto>> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var skill = await _skillRepository.GetAsync(s => s.Id == id);
+            if (skill == null)
+            {
+                return new ErrorDataResult<SkillResponseDto>(ResultMessages.ErrorGet);
+            }
+
+            var response = _mapper.Map<SkillResponseDto>(skill);
+            return new SuccessDataResult<SkillResponseDto>(response, ResultMessages.SuccessGet);
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<SkillResponseDto>(e.Message);
+        }
     }
 
-    public Task<IDataResult<IEnumerable<SkillResponseDto>>> GetAllAsync()
+    public async Task<IDataResult<IEnumerable<SkillResponseDto>>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var skills = await _skillRepository.GetAll(s => !s.IsDeleted).ToListAsync();
+            if (skills == null)
+            {
+                return new ErrorDataResult<IEnumerable<SkillResponseDto>>(ResultMessages.ErrorListed);
+            }
+
+            var response = _mapper.Map<IEnumerable<SkillResponseDto>>(skills);
+            return new SuccessDataResult<IEnumerable<SkillResponseDto>>(response, ResultMessages.SuccessListed);
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<IEnumerable<SkillResponseDto>>(e.Message);
+        }
     }
 
-    public Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsProgramLanguagesAsync(bool program)
+    public async Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsProgramLanguagesAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var programs = await _skillRepository.GetAll(s => s.IsProgramLanguageAndTool).ToListAsync();
+            if (programs == null)
+            {
+                return new ErrorDataResult<IEnumerable<SkillResponseDto>>(ResultMessages.ErrorListed);
+            }
+
+            var response = _mapper.Map<IEnumerable<SkillResponseDto>>(programs);
+            return new SuccessDataResult<IEnumerable<SkillResponseDto>>(response, ResultMessages.SuccessListed);
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<IEnumerable<SkillResponseDto>>(e.Message);
+        }
     }
 
-    public Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsToolsAsync(bool tools)
+    public async Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsToolsAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var programs = await _skillRepository.GetAll(s => !s.IsProgramLanguageAndTool).ToListAsync();
+            if (programs == null)
+            {
+                return new ErrorDataResult<IEnumerable<SkillResponseDto>>(ResultMessages.ErrorListed);
+            }
+
+            var response = _mapper.Map<IEnumerable<SkillResponseDto>>(programs);
+            return new SuccessDataResult<IEnumerable<SkillResponseDto>>(response, ResultMessages.SuccessListed);
+        }
+        catch (Exception e)
+        {
+            return new ErrorDataResult<IEnumerable<SkillResponseDto>>(e.Message);
+        }
     }
 }

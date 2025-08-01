@@ -11,6 +11,6 @@ using Ymyp67CvProject.Entity.Dtos.SocialAccount;
 namespace Ymyp67CvProject.Business.Abstract;
 public interface ISocialAccountService : IGenericService<SocialAccount,SocialAccountResponseDto,SocialAccountCreateRequestDto,SocialAccountUpdateRequestDto,SocialAccountDetailResponseDto>
 {
-    Task<IDataResult<SocialAccountResponseDto>> GetSocialAccountByNameAsync();
-    Task<IDataResult<IEnumerable<SocialAccountResponseDto>>> GetSocialAccountsByUserNameAsync();
+    Task<IDataResult<SocialAccountResponseDto>> GetSocialAccountByNameAsync(string platform);
+    Task<IDataResult<IEnumerable<SocialAccountResponseDto>>> GetSocialAccountsByUserNameAsync(string username);
 }
