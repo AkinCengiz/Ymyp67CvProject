@@ -104,7 +104,7 @@ public class EducationManager : IEducationService
     {
         try
         {
-            var educations = await _educationRepository.GetAll(e => !e.IsDeleted).ToListAsync();
+            var educations = await _educationRepository.GetAll(e => !e.IsDeleted).OrderByDescending(e => e.StartDate).ToListAsync();
             if (educations == null)
             {
                 return new ErrorDataResult<IEnumerable<EducationResponseDto>>(ResultMessages.ErrorListed);

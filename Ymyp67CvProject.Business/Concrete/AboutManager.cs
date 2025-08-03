@@ -109,7 +109,7 @@ public class AboutManager : IAboutService
     {
         try
         {
-            var abouts = await _aboutRepository.GetAll(a => !a.IsDeleted).ToListAsync();
+            var abouts = await _aboutRepository.GetAll(a => !a.IsDeleted).OrderBy(a => a.Order).ToListAsync();
             if (abouts is null)
             {
                 return new ErrorDataResult<IEnumerable<AboutResponseDto>>(ResultMessages.ErrorAboutListed);

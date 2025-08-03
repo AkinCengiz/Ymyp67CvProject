@@ -104,7 +104,7 @@ public class InterestManager : IInterestService
     {
         try
         {
-            var interests = await _interestRepository.GetAll(i => !i.IsDeleted).ToListAsync();
+            var interests = await _interestRepository.GetAll(i => !i.IsDeleted).OrderBy(i => i.Order).ToListAsync();
             if (interests == null)
             {
                 return new ErrorDataResult<IEnumerable<InterestResponseDto>>(ResultMessages.ErrorListed);

@@ -105,7 +105,7 @@ public class ExperienceManager : IExperienceService
     {
         try
         {
-            var experiences = await _experienceRepository.GetAll(e => !e.IsDeleted).ToListAsync();
+            var experiences = await _experienceRepository.GetAll(e => !e.IsDeleted).OrderByDescending(e => e.StartDate).ToListAsync();
             if (experiences == null)
             {
                 return new ErrorDataResult<IEnumerable<ExperienceResponseDto>>(ResultMessages.ErrorListed);
@@ -125,7 +125,7 @@ public class ExperienceManager : IExperienceService
         try
         {
             var experiences =
-                await _experienceRepository.GetAll(e => !e.IsDeleted && e.Company == company).ToListAsync();
+                await _experienceRepository.GetAll(e => !e.IsDeleted && e.Company == company).OrderByDescending(e => e.StartDate).ToListAsync();
             if (experiences == null)
             {
                 return new ErrorDataResult<IEnumerable<ExperienceResponseDto>>(ResultMessages.ErrorListed);
