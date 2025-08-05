@@ -1,30 +1,29 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ymyp67CvProject.Business.Abstract;
-using Ymyp67CvProject.Entity.Dtos.Education;
-using Ymyp67CvProject.Entity.Dtos.Experience;
+using Ymyp67CvProject.Entity.Dtos.Skill;
 
 namespace Ymyp67CvProject.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class EducationsController : ControllerBase
+public class SkillsController : ControllerBase
 {
-    private readonly IEducationService _educationService;
+    private readonly ISkillService _skillService;
 
-    public EducationsController(IEducationService educationService)
+    public SkillsController(ISkillService skillService)
     {
-        _educationService = educationService;
+        _skillService = skillService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(EducationCreateRequestDto dto)
+    public async Task<IActionResult> Create(SkillCreateRequestDto dto)
     {
         if (dto == null)
         {
             return BadRequest("Geçersiz veri");
         }
 
-        var result = await _educationService.AddAsync(dto);
+        var result = await _skillService.AddAsync(dto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -33,14 +32,14 @@ public class EducationsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(EducationUpdateRequestDto dto)
+    public async Task<IActionResult> Update(SkillUpdateRequestDto dto)
     {
         if (dto == null)
         {
             return BadRequest("Geçersiz veri");
         }
 
-        var result = await _educationService.UpdateAsync(dto);
+        var result = await _skillService.UpdateAsync(dto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -52,7 +51,7 @@ public class EducationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _educationService.RemoveAsync(id);
+        var result = await _skillService.RemoveAsync(id);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -64,7 +63,7 @@ public class EducationsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _educationService.GetAllAsync();
+        var result = await _skillService.GetAllAsync();
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -75,18 +74,7 @@ public class EducationsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _educationService.GetByIdAsync(id);
-        if (!result.Success)
-        {
-            return NotFound(result.Message);
-        }
-        return Ok(result.Data);
-    }
-
-    [HttpGet("[action]/{grade}")]
-    public async Task<IActionResult> GetEducationByGrade(string grade)
-    {
-        var result = await _educationService.GetEducationAsync(grade);
+        var result = await _skillService.GetByIdAsync(id);
         if (!result.Success)
         {
             return NotFound(result.Message);
@@ -95,14 +83,24 @@ public class EducationsController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> IsStudent()
+    public async Task<IActionResult> GetProgramLanguageAndTools()
     {
-        var result = await _educationService.AnyContinueAsync();
+        var result = await _skillService.GetSkillsProgramLanguagesAsync();
         if (!result.Success)
         {
             return BadRequest(result.Message);
         }
+        return Ok(result.Data);
+    }
 
-        return Ok(result.Message);
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetWorkflows()
+    {
+        var result = await _skillService.GetWorkflowsAsync();
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+        return Ok(result.Data);
     }
 }

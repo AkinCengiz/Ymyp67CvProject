@@ -138,7 +138,7 @@ public class SkillManager : ISkillService
         }
     }
 
-    public async Task<IDataResult<IEnumerable<SkillResponseDto>>> GetSkillsToolsAsync()
+    public async Task<IDataResult<IEnumerable<SkillResponseDto>>> GetWorkflowsAsync()
     {
         try
         {

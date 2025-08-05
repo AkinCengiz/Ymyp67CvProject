@@ -1,30 +1,29 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ymyp67CvProject.Business.Abstract;
-using Ymyp67CvProject.Entity.Dtos.Education;
-using Ymyp67CvProject.Entity.Dtos.Experience;
+using Ymyp67CvProject.Entity.Dtos.SocialAccount;
 
 namespace Ymyp67CvProject.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class EducationsController : ControllerBase
+public class SocialAccountsController : ControllerBase
 {
-    private readonly IEducationService _educationService;
+    private readonly ISocialAccountService _socialAccountService;
 
-    public EducationsController(IEducationService educationService)
+    public SocialAccountsController(ISocialAccountService socialAccountService)
     {
-        _educationService = educationService;
+        _socialAccountService = socialAccountService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(EducationCreateRequestDto dto)
+    public async Task<IActionResult> Create(SocialAccountCreateRequestDto dto)
     {
         if (dto == null)
         {
             return BadRequest("Geçersiz veri");
         }
 
-        var result = await _educationService.AddAsync(dto);
+        var result = await _socialAccountService.AddAsync(dto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -33,14 +32,14 @@ public class EducationsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(EducationUpdateRequestDto dto)
+    public async Task<IActionResult> Update(SocialAccountUpdateRequestDto dto)
     {
         if (dto == null)
         {
             return BadRequest("Geçersiz veri");
         }
 
-        var result = await _educationService.UpdateAsync(dto);
+        var result = await _socialAccountService.UpdateAsync(dto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -52,7 +51,7 @@ public class EducationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _educationService.RemoveAsync(id);
+        var result = await _socialAccountService.RemoveAsync(id);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -64,7 +63,7 @@ public class EducationsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _educationService.GetAllAsync();
+        var result = await _socialAccountService.GetAllAsync();
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -75,7 +74,7 @@ public class EducationsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _educationService.GetByIdAsync(id);
+        var result = await _socialAccountService.GetByIdAsync(id);
         if (!result.Success)
         {
             return NotFound(result.Message);
@@ -83,10 +82,10 @@ public class EducationsController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpGet("[action]/{grade}")]
-    public async Task<IActionResult> GetEducationByGrade(string grade)
+    [HttpGet("[action]/{platform}")]
+    public async Task<IActionResult> GetBySocialPlatform(string platform)
     {
-        var result = await _educationService.GetEducationAsync(grade);
+        var result = await _socialAccountService.GetSocialAccountByNameAsync(platform);
         if (!result.Success)
         {
             return NotFound(result.Message);
@@ -94,15 +93,14 @@ public class EducationsController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpGet("[action]")]
-    public async Task<IActionResult> IsStudent()
+    [HttpGet("[action]/{username}")]
+    public async Task<IActionResult> GetAllByUsername(string username)
     {
-        var result = await _educationService.AnyContinueAsync();
+        var result = await _socialAccountService.GetSocialAccountsByUserNameAsync(username);
         if (!result.Success)
         {
             return BadRequest(result.Message);
         }
-
-        return Ok(result.Message);
+        return Ok(result.Data);
     }
 }
